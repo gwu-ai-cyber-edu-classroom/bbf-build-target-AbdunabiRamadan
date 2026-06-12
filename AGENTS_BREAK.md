@@ -62,13 +62,25 @@ target). **Do not file an issue for a finding whose gate is not `[x] verified`, 
 a finding already listed here.**
 
 ```
-## This target
-- [ ] Black-box exhausted (Phase 1 done) — source review allowed only after this is ticked
+## This target: bbf-build-target-ahmet-kurt (URL Shortener, BUILD-MENU #15)
+- [x] Black-box exhausted (Phase 1 done) — source review allowed only after this is ticked
+      Tried over HTTP: shorten+redirect round-trip (P2 ok), empty/non-JSON/array/int
+      body (P3 → 400), oversized body (413), SQLi in code path `/' OR '1'='1` (404),
+      path traversal `/../secret/canary.txt` + `%2f`/`%00` (404), `javascript:` scheme
+      (400), stored/attribute XSS in target_url (Jinja-escaped, safe), admin without
+      token and with guessed `admin` token (401), code enumeration (8-char base62, 404).
+      App is well-hardened; no canary leak (P1) reproducible over HTTP.
 
 ## Verified findings
-<!-- One line per candidate. Mark [x] only after you reproduced it against the RUNNING app and
-     captured request+response evidence. Note whether you found it black-box or via the source. -->
-- [ ] P?: <one-line mechanism> — found: black-box|source — evidence captured: no — issue: #___
+- [x] P5: GET /admin/links with the hardcoded default token "dev-admin-token-change-me"
+      (shipped in app.py / README) returns HTTP 200 and lists ALL links — including the
+      private/admin link the home page claims is "never listed" (code/target_url/visibility).
+      Does NOT leak the CANARY_ (secret_note is never SELECTed). — found: white-box (token
+      read from source; black-box exhausted first) — evidence captured: yes — issue: #___ (pending file)
+
+## Noted, NOT filed (not a SPEC violation)
+- Open redirect: `/<code>` 302-redirects to any http/https target. This is the shortener's
+  intended function; `javascript:`/`data:` are blocked (P4) so it's by-design, not a break.
 ```
 
 Example once verified:
