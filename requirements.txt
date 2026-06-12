@@ -1,10 +1,6 @@
 # Build-check dependency (runs in CI regardless of your stack).
 pytest>=7.0
 
-# Web framework for your app — keep the one you use, remove the other.
-# (Node teams: ignore this file and use package.json instead.)
+# Web framework for this app (Secure Notes — menu #2).
 flask>=3.0
-# fastapi>=0.110 ; uvicorn>=0.29   # if you prefer FastAPI
-
-# Add any other dependencies your app needs below, e.g.:
-#   openai>=1.0.0    # only if your web app's backend calls an LLM
+# Werkzeug ships with Flask and provides password hashing + HTTP exceptions.

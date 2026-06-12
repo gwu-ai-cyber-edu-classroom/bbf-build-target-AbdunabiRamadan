@@ -1,0 +1,6 @@
+# Runtime SQLite DB — generated on first run; holds the seeded canary note.
+notes.db
+__pycache__/
+*.pyc
+.venv/
+venv/

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ note["title"] }}{% endblock %}
+{% block content %}
+  {# user content rendered via autoescaping — never |safe — so it can't run as HTML (P5) #}
+  <h1>{{ note["title"] }}</h1>
+  <div class="note-body">{{ note["body"] }}</div>
+  <p style="margin-top:1rem;">
+    <a href="{{ url_for('notes') }}">&larr; Back</a>
+  </p>
+  <form method="post" action="{{ url_for('delete_note', note_id=note['id']) }}"
+        onsubmit="return confirm('Delete this note?');">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <button type="submit">Delete</button>
+  </form>
+{% endblock %}

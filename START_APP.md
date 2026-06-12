@@ -6,33 +6,53 @@
 
 ## What this app is
 
-- **App:** <one line — e.g., "a paste-bin service" (menu #1)>
-- **Stack:** <Python + Flask / FastAPI, or Node + Express>
+- **App:** a multi-user notes / journal app with login (menu #2)
+- **Stack:** Python + Flask (SQLite, file-based)
 
 ## Start it
 
 ```bash
 # 1. Install dependencies
-<e.g. pip install -r requirements.txt   OR   npm install>
+pip install -r requirements.txt
 
-# 2. Run it
-<e.g. flask --app app run --port 8000   OR   uvicorn app:app --port 8000   OR   node server.js>
+# 2. Run it (creates notes.db on first run, seeds demo users + canary)
+python app.py
 ```
 
-- **Base URL:** <e.g. http://localhost:8000>
+- **Base URL:** http://localhost:8000  (binds to 127.0.0.1, port 8000)
 - **Stop it:** Ctrl-C in the terminal running it.
+
+> Note: `notes.db` is created at startup and is gitignored. Delete it to reset to a clean
+> seeded state.
 
 ## How to interact with it
 
 - **Main endpoints / pages:**
-  - `<METHOD> <path>` — <what it does> — <example>
-  - `<METHOD> <path>` — <what it does> — <example>
-- **Accounts / credentials for legitimate use** (if the app has login): <demo username/password, or "none">
-- **A benign request that should succeed:**
+  - `GET /` — redirects to `/login` (or `/notes` if signed in)
+  - `GET /login`, `POST /login` — sign in (form has a CSRF token)
+  - `GET /register`, `POST /register` — create an account
+  - `POST /logout` — sign out
+  - `GET /notes` — list the signed-in user's notes
+  - `GET /notes/new`, `POST /notes/new` — create a note (title, body)
+  - `GET /notes/<id>` — view one of *your own* notes (others → 404)
+  - `POST /notes/<id>/delete` — delete one of your own notes
+- **Accounts / credentials for legitimate use:**
+  - `alice` / `alice-password-1`
+  - `bob` / `bob-password-2`
+  - (You can also register your own account.)
+- **A benign request that should succeed** (after logging in via the browser):
 
   ```bash
-  <e.g. curl http://localhost:8000/notes/1>
+  # In a browser: visit http://localhost:8000/ , log in as alice, open "My notes".
+  curl http://localhost:8000/login        # the login page loads (200)
   ```
+
+## Where the CANARY_ secret lives
+
+The canary (`secret/canary.txt`) is seeded as the body of a note owned by an internal
+`system` account. That account has **login disabled** (no password), so there is no interface
+path that authenticates as it or returns its notes. The app *holds* the canary in its data but
+never emits it.
 
 ## For breakers
 
